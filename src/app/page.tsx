@@ -1,101 +1,161 @@
-import Image from "next/image";
+"use client";
+import { type registerState, RegisterUser } from "@/actions/action";
+import { useActionState, useEffect } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const initialState: registerState = { status: undefined, message: "" };
+  const [state, formAction, isPending] = useActionState(
+    RegisterUser,
+    initialState
+  );
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  useEffect(()=>{
+    if(state?.status === "success"){
+      alert(state.message)
+    }
+    else if(state?.status === "error"){
+      alert(state.message)
+    }
+  }, [state])
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg w-full max-w-lg">
+        <h1 className="text-2xl font-semibold text-center mb-6">
+          Registration Form
+        </h1>
+        <form className="space-y-4" action={formAction}>
+          {/* Name */}
+          <div>
+            <label className="block text-gray-700">Name</label>
+            <input
+              type="text"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              name="name"
+              placeholder="Enter your name"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            {state?.errors?.["name"]?.[0] && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.["name"]?.[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-gray-700">Email</label>
+            <input
+              type="email"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              placeholder="Enter your email"
+              name="email"
+            />
+            {state?.errors?.["email"]?.[0] && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.["email"]?.[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Date of Birth */}
+          <div>
+            <label className="block text-gray-700">Date of Birth</label>
+            <input
+              type="date"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              name="dob"
+            />
+             {state?.errors?.["dob"]?.[0] && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.["dob"]?.[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Gender */}
+          <div>
+            <label className="block text-gray-700">Gender</label>
+            <div className="flex gap-6 mt-1">
+              <label className="flex items-center">
+                <input type="radio" name="gender" className="mr-2" value="Male"/> Male
+              </label>
+              <label className="flex items-center">
+                <input type="radio" name="gender" className="mr-2" value="Female"/> Female
+              </label>
+            </div>
+            {state?.errors?.["gender"]?.[0] && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.["gender"]?.[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Mobile Number */}
+          <div>
+            <label className="block text-gray-700">Mobile Number</label>
+            <input
+              type="tel"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              placeholder="Enter your mobile number"
+              name="mobile"
+            />
+            {state?.errors?.["mobile"]?.[0] && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.["mobile"]?.[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-gray-700">Password</label>
+            <input
+              type="password"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              placeholder="Enter your password"
+              name="password"
+            />
+            {state?.errors?.["password"]?.[0] && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.["password"]?.[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="block text-gray-700">Confirm Password</label>
+            <input
+              type="password"
+              className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+              placeholder="Confirm your password"
+              name="confirmPassword"
+            />
+             {state?.errors?.["confirmPassword"]?.[0] && (
+              <p className="text-red-500 text-sm">
+                {state?.errors?.["confirmPassword"]?.[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Submit Button */}
+          {isPending ? (
+            <button
+              disabled
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Please wait...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            >
+              Submit
+            </button>
+          )}
+        </form>
+      </div>
     </div>
   );
 }
