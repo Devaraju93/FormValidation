@@ -1,6 +1,7 @@
 "use client";
 import { type registerState, RegisterUser } from "@/actions/action";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { EyeOff, Eye } from "lucide-react";
 
 export default function Home() {
   const initialState: registerState = { status: undefined, message: "" };
@@ -9,14 +10,16 @@ export default function Home() {
     initialState
   );
 
-  useEffect(()=>{
-    if(state?.status === "success"){
-      alert(state.message)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    if (state?.status === "success") {
+      alert(state.message);
+    } else if (state?.status === "error") {
+      alert(state.message);
     }
-    else if(state?.status === "error"){
-      alert(state.message)
-    }
-  }, [state])
+  }, [state]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
@@ -65,7 +68,7 @@ export default function Home() {
               className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
               name="dob"
             />
-             {state?.errors?.["dob"]?.[0] && (
+            {state?.errors?.["dob"]?.[0] && (
               <p className="text-red-500 text-sm">
                 {state?.errors?.["dob"]?.[0]}
               </p>
@@ -77,10 +80,22 @@ export default function Home() {
             <label className="block text-gray-700">Gender</label>
             <div className="flex gap-6 mt-1">
               <label className="flex items-center">
-                <input type="radio" name="gender" className="mr-2" value="Male"/> Male
+                <input
+                  type="radio"
+                  name="gender"
+                  className="mr-2"
+                  value="Male"
+                />{" "}
+                Male
               </label>
               <label className="flex items-center">
-                <input type="radio" name="gender" className="mr-2" value="Female"/> Female
+                <input
+                  type="radio"
+                  name="gender"
+                  className="mr-2"
+                  value="Female"
+                />{" "}
+                Female
               </label>
             </div>
             {state?.errors?.["gender"]?.[0] && (
@@ -109,12 +124,20 @@ export default function Home() {
           {/* Password */}
           <div>
             <label className="block text-gray-700">Password</label>
-            <input
-              type="password"
-              className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-              placeholder="Enter your password"
-              name="password"
-            />
+            <div className="flex gap-x-2 items-center">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
+                placeholder="Enter your password"
+                name="password"
+              />
+              {showPassword ? (
+                <EyeOff onClick={() => setShowPassword(!showPassword)} />
+              ) : (
+                <Eye onClick={() => setShowPassword(!showPassword)} />
+              )}
+            </div>
+
             {state?.errors?.["password"]?.[0] && (
               <p className="text-red-500 text-sm">
                 {state?.errors?.["password"]?.[0]}
@@ -125,13 +148,20 @@ export default function Home() {
           {/* Confirm Password */}
           <div>
             <label className="block text-gray-700">Confirm Password</label>
+            <div className="flex gap-x-2 items-center">
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               className="w-full mt-1 p-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
               placeholder="Confirm your password"
               name="confirmPassword"
             />
-             {state?.errors?.["confirmPassword"]?.[0] && (
+            {showConfirmPassword ? (
+              <EyeOff onClick={() => setShowConfirmPassword(!showConfirmPassword)} />
+            ) : (
+              <Eye onClick={() => setShowConfirmPassword(!showConfirmPassword)} />
+            )}
+            </div>
+            {state?.errors?.["confirmPassword"]?.[0] && (
               <p className="text-red-500 text-sm">
                 {state?.errors?.["confirmPassword"]?.[0]}
               </p>
